@@ -51,6 +51,12 @@ class RosBridgeTCP(object):
     def get_recv_data(self):
         return self.recv_data
 
+    def flush(self, time=1):
+        tm = time.time()
+        while time.time() - tm < time:
+            self.wait()
+            time.sleep(0.2)
+
     def wait(self):
         self.recv_data = []
         try:

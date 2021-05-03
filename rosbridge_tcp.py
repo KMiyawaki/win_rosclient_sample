@@ -101,24 +101,16 @@ class RosBridgeTCP(object):
                     return msg_data
         return None
 
-    def wait_message(self, target_words=None, timeout=None):
-        tm = time.time()
-        message = None
-        while message is None:
-            if timeout is not None and time.time() - tm >= timeout:
-                return None
-            message = self.check_messages(self.wait(), target_words)
-        return message
-
-    def wait_response(self, publish_msg, target_words=None, timeout=None, publish_rate=1):
+    def wait_response(self, publish_msg=None, target_words=None, timeout=None, publish_rate=1):
         sleep_time = 1 / publish_rate
         tm = time.time()
         message = None
         while message is None:
             if timeout is not None and time.time() - tm >= timeout:
                 return None
-            self.send_message(publish_msg)
-            print("Sending ros message: " + str(publish_msg))
-            time.sleep(sleep_time)
+            if publish_msg is not None:
+                self.send_message(publish_msg)
+                print("Sending ros message: " + str(publish_msg))
+                time.sleep(sleep_time)
             message = self.check_messages(self.wait(), target_words)
         return message

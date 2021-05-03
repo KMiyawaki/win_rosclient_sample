@@ -37,7 +37,7 @@ def main():
     }
     ros_bridge_tcp.send_message(subscribe_msg)
     print("Waiting ROS message...")
-    message_from_ros = ros_bridge_tcp.wait_message()
+    message_from_ros = ros_bridge_tcp.wait_response()
     if message_from_ros:
         print("Receive from ROS:" + message_from_ros)
     # Start image processing, open camera.

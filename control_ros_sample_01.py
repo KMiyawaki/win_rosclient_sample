@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from rosbridge_tcp import RosBridgeTCP
-from utils import build_ros_array_msg
+from ros_utils import build_ros_array_msg
 
 
 def main():

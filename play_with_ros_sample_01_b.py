@@ -3,7 +3,7 @@
 import random
 import time
 from rosbridge_tcp import RosBridgeTCP
-from utils import build_ros_array_msg
+from ros_utils import build_ros_array_msg
 
 
 def judge(robot_direction_type, your_face_direction):

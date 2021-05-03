@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import time
 from rosbridge_tcp import RosBridgeTCP
-from utils import build_ros_array_msg
+from ros_utils import build_ros_array_msg
 
 
 def main():

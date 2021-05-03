@@ -2,7 +2,7 @@
 import json
 import socket
 import select
-from utils import bson_serialize
+from ros_utils import bson_serialize
 from json.decoder import WHITESPACE
 
 

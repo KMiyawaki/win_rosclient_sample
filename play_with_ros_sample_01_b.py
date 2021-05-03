@@ -62,7 +62,7 @@ def main():
         "msg": {"data": result}
     }
     # Send game result to ROS.
-    ros_bridge_tcp.wait_response(pub_msg, timeout=5)
+    ros_bridge_tcp.wait_response(pub_msg, timeout=10)
 
     try:
         ros_bridge_tcp.terminate()

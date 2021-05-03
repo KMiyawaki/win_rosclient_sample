@@ -21,7 +21,7 @@ def judge(robot_hand_type, your_hand_type):
 def main():
     ros_bridge_tcp = RosBridgeTCP()
     # publisher from windows
-    topic_name_from_win = "/from_windows_a"
+    topic_name_from_win = "/from_windows_rps"
     advertise_msg = {
         "op": "advertise",
         "topic": topic_name_from_win,
@@ -29,7 +29,7 @@ def main():
     }
     ros_bridge_tcp.send_message(advertise_msg)
     # subscribe to ros topic
-    topic_name_from_ros = "/from_ros_a"
+    topic_name_from_ros = "/from_ros_rps"
     subscribe_msg = {
         "op": "subscribe",
         "topic": topic_name_from_ros,

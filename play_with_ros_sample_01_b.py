@@ -30,13 +30,10 @@ def main():
         "type": "std_msgs/String"
     }
     ros_bridge_tcp.send_message(subscribe_msg)
-    # Clear ROS message
-    message_from_ros = ""
-    while not message_from_ros:
-        messages = ros_bridge_tcp.wait()
-        if messages:
-            message_from_ros = messages[0]['msg']['data']
-            print("Receive from ROS:" + message_from_ros)
+    print("Waiting ROS message...")
+    message_from_ros = ros_bridge_tcp.wait_message()
+    if message_from_ros:
+        print("Receive from ROS:" + message_from_ros)
     # Start image processing, open camera.
     face_directions = ["up", "down", "left", "right"]
     tm = time.time()
@@ -46,34 +43,26 @@ def main():
     face_direction = random.choice(face_directions)  # Dummy code
     # Finish image processing, close camera.
 
-    # Reset timer and clear ROS message
-    message_from_ros = ""
-    tm = time.time()
-    while time.time() - tm < 30 and not message_from_ros:
-        pub_msg = {
-            "op": "publish",
-            "topic": topic_name_from_win,
-            "msg": {"data": face_direction}
-        }
-        ros_bridge_tcp.send_message(pub_msg)
-        print("Sending ros message: " + str(pub_msg))
-        time.sleep(1)
-        messages = ros_bridge_tcp.wait()
-        if messages and messages[0]['msg']['data'] in face_directions:
-            message_from_ros = messages[0]['msg']['data']
-            print("Receive from ROS:" + message_from_ros)
+    # Send your hand type to ROS, and wait ROS robot's hand type.
+    pub_msg = {
+        "op": "publish",
+        "topic": topic_name_from_win,
+        "msg": {"data": face_direction}
+    }
+    message_from_ros = ros_bridge_tcp.wait_response(
+        pub_msg, face_directions, 30)
+    if message_from_ros:
+        print("Receive from ROS:" + message_from_ros)
 
     # Judge
     result = judge(message_from_ros, face_direction)
-    while time.time() - tm < 10:
-        pub_msg = {
-            "op": "publish",
-            "topic": topic_name_from_win,
-            "msg": {"data": result}
-        }
-        ros_bridge_tcp.send_message(pub_msg)
-        print("Sending ros message: " + str(pub_msg))
-        time.sleep(1)
+    pub_msg = {
+        "op": "publish",
+        "topic": topic_name_from_win,
+        "msg": {"data": result}
+    }
+    # Send game result to ROS.
+    ros_bridge_tcp.wait_response(pub_msg, timeout=5)
 
     try:
         ros_bridge_tcp.terminate()

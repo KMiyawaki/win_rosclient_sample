@@ -4,6 +4,7 @@ import bson
 import math
 import time
 
+
 def build_ros_header(time, frame_id, seq):
     s2, s = math.modf(time)
     return {

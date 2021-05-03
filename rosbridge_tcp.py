@@ -2,6 +2,7 @@
 import json
 import socket
 import select
+import time
 from ros_utils import bson_serialize
 from json.decoder import WHITESPACE
 
@@ -88,3 +89,36 @@ class RosBridgeTCP(object):
                 break
             ob, end = decoder.raw_decode(s, i)
             yield ob
+
+    def check_messages(self, messages, target_words=None):
+        for m in messages:
+            msg_data = m['msg']['data']
+            if target_words is None:
+                return msg_data
+
+            for target in target_words:
+                if target in msg_data:
+                    return msg_data
+        return None
+
+    def wait_message(self, target_words=None, time_limit=None):
+        tm = time.time()
+        message = None
+        while message is None:
+            if time_limit is not None and time.time() - tm >= time_limit:
+                return None
+            message = self.check_messages(self.wait(), target_words)
+        return message
+
+    def wait_response(self, publish_msg, target_words=None, time_limit=None, publish_rate=1):
+        sleep_time = 1 / publish_rate
+        tm = time.time()
+        message = None
+        while message is None:
+            if time_limit is not None and time.time() - tm >= time_limit:
+                return None
+            self.send_message(publish_msg)
+            print("Sending ros message: " + str(publish_msg))
+            time.sleep(sleep_time)
+            message = self.check_messages(self.wait(), target_words)
+        return message
